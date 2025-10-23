@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - SwapShelf</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+<!--             flex-direction: column; -->
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #343a40;
+            color: white;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 15px;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+        }
+         .content {
+            flex: 1;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        .welcome-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .card {
+    transition: transform 0.2s ease-in-out;
+            }
+        .card:hover {
+        transform: translateY(-5px);
+            }
+
+
+
+    </style>
+</head>
+<body>
+
+<!--&lt;!&ndash; ✅ Navbar &ndash;&gt;-->
+<!--&lt;!&ndash; ✅ Top Navbar &ndash;&gt;-->
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">-->
+<!--    <div class="container-fluid">-->
+<!--        &lt;!&ndash; Site Title or Logo &ndash;&gt;-->
+<!--        <a class="navbar-brand" href="#">📚 SwapShelf Admin</a>-->
+
+<!--        &lt;!&ndash; Right Side: Logout Button &ndash;&gt;-->
+<!--        <div class="ms-auto">-->
+<!--            <form th:action="@{/logout}" method="post" class="d-inline">-->
+<!--                <button type="submit" class="btn btn-outline-light">Logout</button>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<div>-->
+<!--    <nav>-->
+
+<!--    </nav>-->
+<!--</div>-->
+
+
+<!--<div class="sidebar">-->
+<!--    <h4 class="text-center py-3">Admin Menu</h4>-->
+<!--    <a href="#users">👥 Users</a>-->
+<!--    <a href="#books">📚 Books</a>-->
+<!--    <a href="#requests">🔄 Exchange Requests</a>-->
+<!--</div>-->
+
+<div class="sidebar">
+    <h4 class="text-center py-3">Admin Menu</h4>
+    <a href="/admin/dashboard" id="home">🏠 Home</a>
+    <a href="/admin/dashboard/all-users" id="users">👥 Users</a>
+    <a href="/admin/dashboard/all-books" id="books">📚 Books</a>
+    <a href="/admin/dashboard/all-exchange-request" id="exchange-request">🔄 Exchange Requests</a>
+    <form th:action="@{/logout}" method="post" style="margin:0;">
+        <button type="submit" class="w-100 text-start"
+                style="background:none; border:none; color:white; padding:15px; text-decoration:none;">
+            🚪 Logout
+        </button>
+    </form>
+</div>
+
+
+
+<div class="content">
+
+    <h2 class="text-center mb-5">👨‍💼 Admin Dashboard</h2>
+
+    <div class="welcome-box mb-4">
+        <h1>👨‍💼 Welcome to the Admin Dashboard</h1>
+        <p class="lead">Manage users, books, and exchange requests all in one place.</p>
+    </div>
+
+    <!-- ✅ Dashboard Stats -->
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card shadow p-3 mb-3 bg-white rounded">
+                <h4>👥 Total Users</h4>
+                <h2 th:text="${totalUsers}">0</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow p-3 mb-3 bg-white rounded">
+                <h4>📚 Total Books</h4>
+                <h2 th:text="${totalBooks}">0</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow p-3 mb-3 bg-white rounded">
+                <h4>🔄 Total Exchange Requests</h4>
+                <h2 th:text="${totalRequests}">0</h2>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Users Section -->
+    <!-- Users Section -->
+<!--    <div id="users-section" class="table-responsive section hidden">-->
+<!--        <table id="data-table" class="table table-striped">-->
+<!--            <thead>-->
+<!--            <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th></tr>-->
+<!--            </thead>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Books Section &ndash;&gt;&ndash;&gt;-->
+<!--    <div id="books-section" class="table-responsive section hidden">-->
+<!--        <table id="book-table" class="table table-striped">-->
+<!--            <thead>-->
+<!--            <tr><th>ID</th><th>Title</th><th>Author</th><th>Owner</th><th>Status</th></tr>-->
+<!--            </thead>-->
+<!--        </table>-->
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; Exchange Section &ndash;&gt;-->
+<!--    <div id="exchange-section" class="table-responsive section">-->
+<!--        <table id="exchange-table" class="table table-striped">-->
+<!--            <thead>-->
+<!--            <tr><th>ID</th><th>Requester</th><th>Requested Book</th><th>Return Book</th><th>Status</th><th>Time</th></tr>-->
+<!--            </thead>-->
+<!--        </table>-->
+<!--    </div>-->
+
+</div>
+
+
+
+
+    <script src="/js/index.js"></script>
+</body>
+</html>

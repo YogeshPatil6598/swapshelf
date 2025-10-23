@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Header</title>
+</head>
+<body>
+     <div  th:fragment="header" class="header">
+        <nav>
+            <a href="/">
+            <img width="160px" src="/assets/img/brand-logo.png" alt="SwapShelf"/>
+            </a>
+            <div class="nav-links">
+                <ul>
+                    <li><a th:href="@{/books}" class="nav-link">Browse Books</a></li>
+                    <li><a  th:href="@{/}" class="nav-link">Home</a></li>
+                    <li><a th:href="@{/help}" class="nav-link">Help</a></li>
+
+                </ul>
+            </div>
+
+            <div class="mobile-nav-links">
+                <button id="close-menu">
+                    <img src="./images/close-black.png" alt="Close Menu button" />
+                </button>
+                <ul>
+                    <li><a th:href="@{/books}" class="nav-link" >Browse Books</a></li>
+                    <li><a th:href="@{/}" class="nav-link">Home</a></li>
+                    <li><a th:href="@{/help}" class="nav-link">Help</a></li>
+
+                </ul>
+            </div>
+
+
+
+            <div class="nav-options">
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/my-account/exchange-requests}">Exchange Request</a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/my-account/books}">My Books</a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/my-account/profile}">Profile</a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/logout}">Logout</a>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}">Login</a>
+                </div>
+                <button id="open-menu">
+                    <img src="./images/menu-black.png" alt="Open Menu Button" />
+                </button>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

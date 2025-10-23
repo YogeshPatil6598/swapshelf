@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Books - SwapShelf</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        a.card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            transform: scale(1.02);
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+<!-- header -->
+<div th:replace="~{/includes/header :: header}"> </div>
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">Explore Books</h2>
+
+    <!-- Filter Form -->
+    <form class="row g-3 mb-4" method="get" th:action="@{/books}">
+        <div class="col-md-3">
+            <input type="text" name="title" class="form-control" placeholder="Book Title" th:value="${param.title}">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="author" class="form-control" placeholder="Author" th:value="${param.author}">
+        </div>
+
+        <div class="col-md-3">
+            <input list="genreList" name="genre" id="genre" class="form-control" th:value="${selectedGenre}" placeholder="Select or Type Genre">
+            <datalist id="genreList">
+                <option th:each="g : ${genres}" th:value="${g}"></option>
+            </datalist>
+            </div>
+<!--        <div class="col-md-3">-->
+<!--        <select name="genre" id="genre" onchange="this.form.submit()">-->
+<!--            <option value="">All Genres</option>-->
+<!--            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"-->
+<!--                    th:selected="${g} == ${selectedGenre}"></option>-->
+<!--        </select>-->
+<!--        </div>-->
+<!--        <div class="col-md-3">-->
+<!--            <input type="text" name="genre" class="form-control" placeholder="Genre" th:value="${param.genre}">-->
+<!--        </div>-->
+        <div class="col-md-3">
+            <input list="tagList" name="tag" id="tag" class="form-control" th:value="${selectedTag}" placeholder="Select or Type Tag">
+            <datalist id="tagList">
+                <option th:each="t : ${tags}" th:value="${t}"></option>
+            </datalist>
+        </div>
+<!--        <div class="col-md-3">-->
+<!--            <input type="text" name="tag" class="form-control" placeholder="Tag" th:value="${param.tag}">-->
+<!--        </div>-->
+        <div class="col-md-12 text-end">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-filter me-1"></i> Filter
+            </button>
+        </div>
+    </form>
+
+    <!-- Books Grid -->
+    <!-- Books Grid -->
+    <div class="row" th:if="${books != null and books.size() > 0}">
+        <div class="col-md-4 mb-4" th:each="book : ${books}">
+            <a class="card-link" th:href="@{/book/{id}/details(id=${book.id})}">
+                <div class="card h-100 shadow-sm rounded-3">
+                    <div class="row g-0">
+                        <!-- Image on the left -->
+                        <div class="col-4">
+                            <div class="h-100 w-100 d-flex align-items-center justify-content-center overflow-hidden p-1"
+                                 style="background-color: #f8f9fa;">
+                                <img th:src="@{${book.imagePath} + '?t=' + ${#dates.createNow().getTime()}}"
+                                     alt="Book Cover"
+                                     style="max-height: 150px; max-width: 100%; object-fit: contain;">
+                            </div>
+                        </div>
+                        <!-- Content on the right -->
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title mb-2" th:text="${book.title}">Book Title</h5>
+                                <p class="card-text mb-1">
+                                    <strong>Author:</strong> <span th:text="${book.author}">Author</span><br>
+                                    <strong>Genre:</strong> <span th:text="${book.genre}">Genre</span><br>
+                                    <strong>Tags:</strong> <span th:text="${book.tags}">Tags</span>
+                                </p>
+                                <span class="badge bg-success rounded-pill" th:text="${book.status}">Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- No books found -->
+    <div class="text-center t   ext-muted" th:if="${books == null or books.size() == 0}">
+        <p>No books found matching your criteria.</p>
+    </div>
+
+</div>
+<!-- Footer Include -->
+<div th:replace="~{/includes/footer :: footer}"></div>
+</body>
+</html>

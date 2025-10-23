@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'SwapShelf - ' + ${book.title}">Book Details</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ovo&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .book-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 2rem;
+        }
+
+        .book-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .book-info h2 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .book-info .badge {
+            font-size: 0.85rem;
+            padding: 0.5em 0.75em;
+        }
+
+        .book-info p {
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-request {
+            font-weight: 500;
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .book-meta label {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            display: inline-block;
+            color: #555;
+        }
+
+        .book-meta span {
+            display: block;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div th:replace="~{/includes/header :: header}"></div>
+
+<!-- Book Section -->
+<div class="container my-5">
+    <div class="book-container">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <h2 class="text-primary" th:text="${book.title}">Book Title</h2>
+            <div>
+                <form th:action="@{/exchange/request}" method="post" th:if="${#authentication.name != book.owner.username}">
+                    <input type="hidden" name="bookId" th:value="${book.id}" />
+                    <button type="submit" class="btn btn-dark btn-request">
+                        <i class="bi bi-send-fill me-1"></i> Request This Book
+                    </button>
+                </form>
+                <p th:if="${#authentication.name == book.owner.username}" class="text-muted mt-2">
+                    You are the owner of this book.
+                </p>
+            </div>
+        </div>
+
+        <div class="row align-items-start">
+            <!-- Book Image Left -->
+            <div class="col-md-6 mb-4 mb-md-0">
+                <img th:src="@{${book.imagePath} + '?t=' + ${#dates.createNow().getTime()}}"
+                     class="book-image shadow-sm border" alt="Book Cover">
+            </div>
+
+            <!-- Book Details Right -->
+            <div class="col-md-6 book-info">
+                <span class="badge bg-success mb-3" th:text="${book.status}">Available</span>
+
+                <div class="book-meta">
+                    <label>Author</label>
+                    <span th:text="${book.author}">J.K. Rowling</span>
+
+                    <label>Genre</label>
+                    <span th:text="${book.genre}">Fantasy</span>
+
+                    <label>Description</label>
+                    <span th:text="${book.description}">A wonderful fantasy book.</span>
+
+                    <label>Tags</label>
+                    <span th:text="${book.tags}">magic, wizard, classic</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{/includes/footer :: footer}"></div>
+
+</body>
+</html>

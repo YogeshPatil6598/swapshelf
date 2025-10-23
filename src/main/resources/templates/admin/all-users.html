@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - SwapShelf</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <style>
+        body { display: flex; min-height: 100vh; }
+        .sidebar { width: 220px; background-color: #343a40; color: white; }
+        .sidebar a { color: white; display: block; padding: 15px; text-decoration: none; }
+        .sidebar a:hover { background-color: #495057; }
+        .content { flex: 1; padding: 40px; }
+        .sidebar a.active { background-color: #0d6efd; font-weight: bold; }
+        #user-table tbody tr { cursor: pointer; transition: background-color 0.2s ease; }
+        #user-table tbody tr:hover { background-color: #f1f3f5; }
+        #user-image { max-height: 150px; display:none; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; }
+        .modal-actions { display: flex; gap: 10px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h4 class="text-center py-3">Admin Menu</h4>
+    <a href="/admin/dashboard" id="home">🏠 Home</a>
+    <a href="/admin/dashboard/all-users" id="users">👥 Users</a>
+    <a href="/admin/dashboard/all-books" id="books">📚 Books</a>
+    <a href="/admin/dashboard/all-exchange-request" id="exchange-request">🔄 Exchange Requests</a>
+</div>
+
+<div class="content">
+    <h2 class="text-center mb-5">👨‍💼 Admin Dashboard - Users</h2>
+
+    <!-- ✅ User Table -->
+    <table id="user-table" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+        <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- ✅ User Details Modal -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userDetailsLabel">👤 User Details</h5>
+
+                    <!-- ✅ Top Action Buttons (aligned properly) -->
+                    <div class="modal-actions">
+                        <button id="saveuserBtnTop" class="btn btn-primary btn-sm" disabled>💾 Save</button>
+                        <button id="deleteuserBtnTop" class="btn btn-danger btn-sm">🗑 Delete</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- ✅ Bootstrap Tabs -->
+                    <ul class="nav nav-tabs" id="userTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">User Details</button>
+                        </li>
+<!--                        <li class="nav-item" role="presentation">-->
+<!--                            <button class="nav-link" id="books-tab" data-bs-toggle="tab" data-bs-target="#books" type="button" role="tab">Books</button>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item" role="presentation">-->
+<!--                            <button class="nav-link" id="received-tab" data-bs-toggle="tab" data-bs-target="#received" type="button" role="tab">Requests Received</button>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item" role="presentation">-->
+<!--                            <button class="nav-link" id="requested-tab" data-bs-toggle="tab" data-bs-target="#requested" type="button" role="tab">Requests Requested</button>-->
+<!--                        </li>-->
+                    </ul>
+
+                    <!-- ✅ Tab Content -->
+                    <div class="tab-content pt-3">
+
+                        <!-- General Info Tab -->
+                        <div class="tab-pane fade show active" id="general" role="tabpanel">
+                            <div class="mb-3 text-center">
+                                <img id="user-image" src="" alt="User Image" class="img-fluid rounded shadow"/>
+                            </div>
+                            <form id="userForm">
+                                <input type="hidden" id="user-id"/>
+                                <div class="mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control editable-field" id="user-firstName">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control editable-field" id="user-lastName">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="user-email" disabled>
+                                </div>
+                            </form>
+                        </div>
+
+<!--                        &lt;!&ndash; Books Tab &ndash;&gt;-->
+<!--                        <div class="tab-pane fade" id="books" role="tabpanel">-->
+<!--                            <table class="table table-sm table-bordered" id="user-books-table">-->
+<!--                                <thead><tr><th>ID</th><th>Title</th><th>Status</th></tr></thead>-->
+<!--                                <tbody></tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+
+                        <!-- Requests Received Tab -->
+<!--                        <div class="tab-pane fade" id="received" role="tabpanel">-->
+<!--                            <table class="table table-sm table-bordered" id="user-requests-received">-->
+<!--                                <thead><tr><th>ID</th><th>From User</th><th>Book</th><th>Status</th></tr></thead>-->
+<!--                                <tbody></tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+
+                        <!-- Requests Requested Tab -->
+<!--                        <div class="tab-pane fade" id="requested" role="tabpanel">-->
+<!--                            <table class="table table-sm table-bordered" id="user-requests-requested">-->
+<!--                                <thead><tr><th>ID</th><th>Book</th><th>Status</th></tr></thead>-->
+<!--                                <tbody></tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+                    </div>
+                </div> <!-- modal-body -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const userTable = $('#user-table').DataTable({
+            ajax: { url: "/admin/dashboard/users", dataSrc: "" },
+            columns: [
+                { data: "id" },
+                { data: "firstName" },
+                { data: "lastName" },
+                { data: "email" }
+            ]
+        });
+
+        // ✅ Row Click to Open Modal
+        $('#user-table tbody').on('click', 'tr', function () {
+            const data = userTable.row(this).data();
+            if (!data) return;
+
+            $('#user-id').val(data.id);
+            $('#user-firstName').val(data.firstName);
+            $('#user-lastName').val(data.lastName);
+            $('#user-email').val(data.email);
+            data.imageUrl ? $('#user-image').attr('src', data.imageUrl).show() : $('#user-image').hide();
+
+            $('#saveuserBtnTop').prop('disabled', true);
+
+            // Clear tables
+            $('#user-books-table tbody, #user-requests-received tbody, #user-requests-requested tbody').empty();
+
+            // Load related data
+            $.get(`/admin/dashboard/users/${data.id}/books`, books => {
+                books.length ? books.forEach(b => $('#user-books-table tbody').append(`<tr><td>${b.id}</td><td>${b.title}</td><td>${b.status}</td></tr>`))
+                             : $('#user-books-table tbody').append('<tr><td colspan="3" class="text-center">No books found</td></tr>');
+            });
+
+            $.get(`/admin/dashboard/users/${data.id}/exchange-requests/received`, rec => {
+                rec.length ? rec.forEach(r => $('#user-requests-received tbody').append(`<tr><td>${r.id}</td><td>${r.fromUser}</td><td>${r.bookTitle}</td><td>${r.status}</td></tr>`))
+                           : $('#user-requests-received tbody').append('<tr><td colspan="4" class="text-center">No requests received</td></tr>');
+            });
+
+            $.get(`/admin/dashboard/users/${data.id}/exchange-requests/requested`, req => {
+                req.length ? req.forEach(r => $('#user-requests-requested tbody').append(`<tr><td>${r.id}</td><td>${r.bookTitle}</td><td>${r.status}</td></tr>`))
+                           : $('#user-requests-requested tbody').append('<tr><td colspan="3" class="text-center">No requests made</td></tr>');
+            });
+
+            new bootstrap.Modal(document.getElementById('userDetailsModal')).show();
+        });
+
+        // Enable Save on changes
+        let originalValues = {};
+        $('.editable-field').on('focus', function () { originalValues[this.id] = $(this).val(); })
+            .on('input change', function () {
+                const changed = $('.editable-field').toArray().some(el => $(el).val() !== originalValues[el.id]);
+                $('#saveuserBtnTop').prop('disabled', !changed);
+            });
+
+        // Save User
+        $('#saveuserBtnTop').on('click', function (e) {
+            const updatedUser = { id: $('#user-id').val(), firstName: $('#user-firstName').val(), lastName: $('#user-lastName').val() };
+             e.preventDefault();
+
+
+    const userId = $('#edit-profile-id').val();
+    const formData1 = new FormData();
+    formData1.append('firstName', $('#user-firstName').val());
+    formData1.append('lastName', $('#user-lastName').val());
+<!--     formData1.append('mobileno', $('#edit-mobileno').val())-->
+<!--    formData1.append('line1', $('#edit-line1').val());-->
+<!--    formData1.append('line2', $('#edit-line2').val());-->
+<!--    formData1.append('city', $('#edit-city').val());-->
+<!--    formData1.append('state', $('#edit-state').val());-->
+<!--    formData1.append('postalCode', $('#edit-postalcode').val());-->
+
+    $.ajax({
+        url: '/admin/dashboard/users/' + $('#user-id').val(),
+        type: 'PUT',
+        data: formData1,
+        processData: false,
+        contentType: false,
+        success: function () {
+          bootstrap.Modal.getInstance(document.getElementById('userDetailsModal')).hide();
+                        userTable.ajax.reload();
+        },
+        error: function () {
+          alert("Failed to update user.", "error");
+        }
+      });
+        });
+
+        // Delete User
+        $('#deleteuserBtnTop').on('click', function () {
+            const userId = $('#user-id').val();
+            if (confirm("Are you sure you want to delete this user?")) {
+                $.ajax({
+                    url: `/admin/dashboard/users/${userId}`,
+                    method: 'DELETE',
+                    success: function () {
+                        bootstrap.Modal.getInstance(document.getElementById('userDetailsModal')).hide();
+                        userTable.ajax.reload();
+                    },
+                    error: () => alert('Failed to delete user.')
+                });
+            }
+        });
+    });
+</script>
+
+<script src="/js/index.js"></script>
+</body>
+</html>

@@ -113,7 +113,7 @@ spring.jpa.show-sql=true
 ## 👨‍💻 Author
 
 **Yogesh Patil**  
-📧 [Add your email or LinkedIn if you wish]  
+📧 patilyogesh6598@gmail.com
 
 ---
 
